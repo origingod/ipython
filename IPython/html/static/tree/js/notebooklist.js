@@ -21,6 +21,7 @@ define([
         //          base_url: string
         //          notebook_path: string
         var that = this;
+        this.events = options.events;
         this.session_list = options.session_list;
         // allow code re-use by just changing element_name in kernellist.js
         this.element_name = options.element_name || 'notebook';
@@ -196,6 +197,7 @@ define([
             item = this.new_item(i+offset);
             this.add_link(model, item);
         }
+        this.events.trigger('notebook_list_loaded.Dashboard');
     };
 
 
@@ -204,7 +206,7 @@ define([
         // item.addClass('list_item ui-widget ui-widget-content ui-helper-clearfix');
         // item.css('border-top-style','none');
         item.append($("<div/>").addClass("col-md-12").append(
-            $('<i/>').addClass('item_icon')
+            $("<a/>").addClass("item_link").append($('<i/>').addClass('item_icon'))
         ).append(
             $("<a/>").addClass("item_link").append(
                 $("<span/>").addClass("item_name")
@@ -295,7 +297,7 @@ define([
 
     NotebookList.prototype.add_shutdown_button = function (item, session) {
         var that = this;
-        var shutdown_button = $("<button/>").text("Shutdown").addClass("btn btn-xs btn-danger").
+        var shutdown_button = $("<a href='#'><i class='fa fa-stop'></i></a>").addClass("shutdown-link nb-link").
             click(function (e) {
                 var settings = {
                     processData : false,
@@ -322,7 +324,7 @@ define([
     NotebookList.prototype.add_delete_button = function (item) {
         var new_buttons = $('<span/>').addClass("btn-group pull-right");
         var notebooklist = this;
-        var delete_button = $("<button/>").text("Delete").addClass("btn btn-default btn-xs").
+        var delete_button = $("<a href='#'><i class='fa fa-times'></i></a>").addClass("nb-link delete-link").
             click(function (e) {
                 // $(this) is the button that was clicked.
                 var that = $(this);
@@ -498,14 +500,13 @@ define([
             async : false,
             success : function (data, status, xhr) {
                 var notebook_name = data.name;
-                window.open(
+                window.location.href =
                     utils.url_join_encode(
                         base_url,
                         'notebooks',
                         path,
                         notebook_name),
                     '_blank'
-                );
             },
             error : $.proxy(this.new_notebook_failed, this),
         };

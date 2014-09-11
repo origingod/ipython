@@ -38,7 +38,8 @@ require([
         events: events}, 
         common_options));
     notebook_list = new notebooklist.NotebookList('#notebook_list', $.extend({
-        session_list:  session_list}, 
+        events: events,
+        session_list:  session_list},
         common_options));
     cluster_list = new clusterlist.ClusterList('#cluster_list', common_options);
     kernel_list = new kernellist.KernelList('#running_list',  $.extend({

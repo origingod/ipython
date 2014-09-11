@@ -4,9 +4,10 @@
 define([
     'base/js/namespace',
     'jquery',
+    'base/js/utils',
     'notebook/js/toolbar',
     'notebook/js/celltoolbar',
-], function(IPython, $, toolbar, celltoolbar) {
+], function(IPython, $, utils, toolbar, celltoolbar) {
     "use strict";
 
     var MainToolBar = function (selector, options) {
@@ -39,21 +40,20 @@ define([
                     callback : function () {
                         that.notebook.save_checkpoint();
                         }
+                },
+                {
+                    id : 'load_b',
+                    label : 'Load...',
+                    icon : 'fa-folder-o',
+                    callback : function () {
+                        window.open(utils.url_join_encode(
+                                    that.notebook.base_url,
+                                    'tree',
+                                    that.notebook.notebook_path
+                                ));
+                    }
                 }
             ]);
-
-        this.add_buttons_group([
-                {
-                    id : 'insert_below_b',
-                    label : 'Insert Cell Below',
-                    icon : 'fa-plus',
-                    callback : function () {
-                        that.notebook.insert_cell_below('code');
-                        that.notebook.select_next();
-                        that.notebook.focus_cell();
-                        }
-                }
-            ],'insert_above_below');
 
         this.add_buttons_group([
                 {
@@ -83,6 +83,16 @@ define([
             ],'cut_copy_paste');
 
         this.add_buttons_group([
+                {
+                    id : 'insert_below_b',
+                    label : 'Insert Cell Below',
+                    icon : 'fa-plus',
+                    callback : function () {
+                        that.notebook.insert_cell_below('code');
+                        that.notebook.select_next();
+                        that.notebook.focus_cell();
+                        }
+                },
                 {
                     id : 'move_up_b',
                     label : 'Move Cell Up',
